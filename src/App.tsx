@@ -9,6 +9,7 @@ function App() {
   const buttonColor = theme?.button_color || '#3b82f6';
   const linkColor = theme?.link_color || '#06b6d4';
   const hintColor = theme?.hint_color || '#6b7280';
+  const boughtStars = 0;
 
   return (
     <div style={{ backgroundColor: bgColor, color: textColor, minHeight: '100vh' }} 
@@ -59,18 +60,31 @@ function App() {
               { label: 'NAME', value: `${user?.first_name || 'Unknown'} ${user?.last_name || ''}` },
               { label: 'USERNAME', value: `@${user?.username || 'anonymous'}` },
               { label: 'USER ID', value: `#${user?.id || '000000'}` },
-              user?.language_code ? { label: 'LANGUAGE', value: user.language_code.toUpperCase() } : null
-            ].filter((item): item is { label: string; value: string } => item !== null).map((item, i) => (
-              <div key={i} className="rounded-lg p-3 border"
-                   style={{ backgroundColor: `${bgColor}80`, borderColor: `${hintColor}30` }}>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-mono" style={{ color: hintColor }}>{item.label}</span>
-                  <span className="font-semibold" style={{ color: i % 2 ? linkColor : buttonColor }}>
-                    {item.value}
-                  </span>
+              { label: 'BOUGHT', value: `${boughtStars} ⭐` },
+              user?.language_code
+                ? { label: 'LANGUAGE', value: user.language_code.toUpperCase() }
+                : null
+            ]
+              .filter((item): item is { label: string; value: string } => item !== null)
+              .map((item, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg p-3 border"
+                  style={{ backgroundColor: `${bgColor}80`, borderColor: `${hintColor}30` }}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-mono" style={{ color: hintColor }}>
+                      {item.label}
+                    </span>
+                    <span
+                      className="font-semibold"
+                      style={{ color: i % 2 ? linkColor : buttonColor }}
+                    >
+                      {item.value}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           <div className="mt-6 pt-4 border-t flex items-center justify-between text-xs"
