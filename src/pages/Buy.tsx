@@ -11,11 +11,17 @@ function Buy() {
   const linkColor = theme?.link_color || "#06b6d4";
   const hintColor = theme?.hint_color || "#6b7280";
 
+  const [username, setUsername] = useState("");
   const [value, setValue] = useState("");
 
   const num = Number(value);
-  const isEmpty = value.trim() === "";
-  const isValid = !isEmpty && !isNaN(num) && num >= 50 && num <= 20000;
+
+  const isUsernameValid = username.trim().length > 0;
+  const isValueEmpty = value.trim() === "";
+  const isValueValid =
+    !isValueEmpty && !isNaN(num) && num >= 50 && num <= 20000;
+
+  const canBuy = isUsernameValid && isValueValid;
 
   return (
     <div
@@ -36,7 +42,7 @@ function Buy() {
             borderColor: `${linkColor}50`,
           }}
         >
-          {/* ===== TITLE (ТОТ САМЫЙ) ===== */}
+          {/* TITLE */}
           <div
             className="text-center text-sm font-mono tracking-widest mb-6"
             style={{ color: linkColor }}
@@ -44,7 +50,21 @@ function Buy() {
             BUY STARS
           </div>
 
-          {/* INPUT */}
+          {/* USERNAME */}
+          <input
+            type="text"
+            placeholder="Введите username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full rounded-lg p-3 outline-none border text-sm mb-3"
+            style={{
+              backgroundColor: `${bgColor}80`,
+              borderColor: `${hintColor}40`,
+              color: textColor,
+            }}
+          />
+
+          {/* VALUE */}
           <input
             type="text"
             inputMode="numeric"
@@ -63,7 +83,7 @@ function Buy() {
           />
 
           {/* ERROR */}
-          {!isEmpty && !isValid && (
+          {!isValueEmpty && !isValueValid && (
             <div
               className="mt-2 text-xs font-mono"
               style={{ color: "#ef4444" }}
@@ -74,18 +94,21 @@ function Buy() {
 
           {/* BUTTON */}
           <button
-            disabled={!isValid}
+            disabled={!canBuy}
             className="w-full mt-4 py-3 rounded-xl font-bold transition"
             style={{
-              backgroundColor: isValid
+              backgroundColor: canBuy
                 ? buttonColor
                 : `${buttonColor}40`,
               color: "#fff",
-              cursor: isValid ? "pointer" : "not-allowed",
+              cursor: canBuy ? "pointer" : "not-allowed",
             }}
             onClick={() => {
-              if (!isValid) return;
-              console.log("BUY:", num);
+              if (!canBuy) return;
+              console.log("BUY:", {
+                username,
+                amount: num,
+              });
             }}
           >
             BUY STARS
