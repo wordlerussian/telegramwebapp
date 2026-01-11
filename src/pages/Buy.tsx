@@ -81,13 +81,13 @@ function App() {
 
           {/* AMOUNT */}
           <div className="mb-2 text-sm" style={{ color: hintColor }}>
-            ⭐ Enter amount (50 – 1000)
+            ⭐ Enter amount (50 – 20000)
           </div>
 
           <input
             type="range"
             min={50}
-            max={1000}
+            max={20000}
             step={50}
             value={amount}
             onChange={(e) => setAmount(+e.target.value)}
