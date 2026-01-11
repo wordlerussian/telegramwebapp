@@ -1,115 +1,96 @@
-import { useState } from 'react'
+import { useState, useEffect } from "react";
 
-function App() {
-  window.Telegram?.WebApp?.ready()
+export default function Buy() {
+  const [amount, setAmount] = useState<number | "">("");
+  const [username, setUsername] = useState("");
 
-  const tg = window.Telegram?.WebApp
-  const user = tg?.initDataUnsafe?.user
-  const theme = tg?.themeParams
+  const isValid =
+    username.trim().length > 0 &&
+    typeof amount === "number" &&
+    amount > 0;
 
-  const bgColor = theme?.bg_color || '#0a0a0a'
-  const textColor = theme?.text_color || '#ffffff'
-  const buttonColor = theme?.button_color || '#3b82f6'
-  const linkColor = theme?.link_color || '#06b6d4'
-  const hintColor = theme?.hint_color || '#6b7280'
+  // синхронизация input ↔ slider
+  const handleAmountChange = (value: number | "") => {
+    if (value === "" || value < 0) return;
+    setAmount(value);
+  };
 
-  const [username, setUsername] = useState('')
-  const [amount, setAmount] = useState(50)
+  const buyStars = () => {
+    if (!isValid) return;
 
-  const sendToBot = () => {
-    tg?.sendData(
-      JSON.stringify({
-        action: 'buy_stars',
-        from_user: user?.id,
-        target_username: username,
-        amount,
-        currency: 'TON'
-      })
-    )
-  }
+    console.log("BUY", {
+      username,
+      amount,
+    });
+
+    // тут потом sendData или fetch
+  };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{ backgroundColor: bgColor, color: textColor }}
-    >
-      <div className="relative max-w-md w-full">
-        {/* glow */}
-        <div
-          className="absolute inset-0 rounded-2xl blur-xl animate-pulse"
-          style={{ backgroundColor: `${buttonColor}20` }}
-        />
+    <div style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
+      <h2>Buy Stars ⭐</h2>
 
-        <div
-          className="relative rounded-2xl p-6 shadow-2xl border backdrop-blur-sm"
-          style={{
-            backgroundColor: `${bgColor}cc`,
-            borderColor: `${linkColor}50`
-          }}
-        >
-          {/* HEADER */}
-          <div className="mb-6 flex items-center justify-between">
-            <span
-              className="text-sm font-mono tracking-wider"
-              style={{ color: linkColor }}
-            >
-              BUY STARS
-            </span>
-            {user?.is_premium && (
-              <span
-                className="px-3 py-1 rounded-full text-xs font-bold"
-                style={{ backgroundColor: buttonColor }}
-              >
-                ⭐ PREMIUM
-              </span>
-            )}
-          </div>
+      {/* USERNAME */}
+      <input
+        type="text"
+        placeholder="Telegram username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        style={inputStyle}
+      />
 
-          {/* USERNAME */}
-          <input
-            className="w-full mb-4 px-4 py-3 rounded-full outline-none bg-black/40"
-            placeholder="@Enter Telegram username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+      {/* AMOUNT INPUT */}
+      <input
+        type="number"
+        placeholder="Stars amount"
+        value={amount}
+        onChange={(e) =>
+          handleAmountChange(
+            e.target.value === "" ? "" : Number(e.target.value)
+          )
+        }
+        style={inputStyle}
+      />
 
-          {/* CURRENCY */}
-          <div className="w-full mb-4 px-4 py-3 rounded-full bg-black/40 flex justify-between items-center">
-            <span>TON</span>
-            <span className="opacity-60">▼</span>
-          </div>
+      {/* SLIDER */}
+      <input
+        type="range"
+        min={1}
+        max={20000}
+        value={typeof amount === "number" ? amount : 1}
+        onChange={(e) => handleAmountChange(Number(e.target.value))}
+        style={{ width: "100%", marginTop: 10 }}
+      />
 
-          {/* AMOUNT */}
-          <div className="mb-2 text-sm" style={{ color: hintColor }}>
-            ⭐ Enter amount (50 – 20000)
-          </div>
+      <p>Selected: <b>{amount || 0}</b> ⭐</p>
 
-          <input
-            type="range"
-            min={50}
-            max={20000}
-            step={50}
-            value={amount}
-            onChange={(e) => setAmount(+e.target.value)}
-            className="w-full mb-2"
-          />
-
-          <div className="text-center mb-6 text-lg font-semibold">
-            {amount} ⭐
-          </div>
-
-          {/* BUY BUTTON */}
-          <button
-            onClick={sendToBot}
-            className="w-full py-3 rounded-full font-bold transition"
-            style={{ backgroundColor: buttonColor }}
-          >
-            Buy Stars
-          </button>
-        </div>
-      </div>
+      {/* BUY BUTTON */}
+      <button
+        onClick={buyStars}
+        disabled={!isValid}
+        style={{
+          marginTop: 20,
+          width: "100%",
+          padding: 12,
+          borderRadius: 10,
+          border: "none",
+          fontSize: 16,
+          cursor: isValid ? "pointer" : "not-allowed",
+          backgroundColor: isValid ? "#2ea6ff" : "#1f1f1f",
+          color: isValid ? "#fff" : "#777",
+        }}
+      >
+        Buy Stars
+      </button>
     </div>
-  )
+  );
 }
 
-export default App
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: 10,
+  marginTop: 10,
+  borderRadius: 8,
+  border: "1px solid #333",
+  fontSize: 14,
+};
