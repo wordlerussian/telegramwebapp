@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Buy() {
-  window.Telegram?.WebApp?.ready();
+  const tg = window.Telegram?.WebApp;
 
-  const theme = window.Telegram?.WebApp?.themeParams;
+  useEffect(() => {
+    tg?.ready();
+    tg?.expand();
+    tg?.disableVerticalSwipes();
+  }, []);
+
+  const theme = tg?.themeParams;
 
   const bgColor = theme?.bg_color || "#0a0a0a";
   const textColor = theme?.text_color || "#ffffff";
@@ -15,7 +21,6 @@ function Buy() {
   const [value, setValue] = useState("");
 
   const num = Number(value);
-
   const isUsernameValid = username.trim().length > 0;
   const isValueEmpty = value.trim() === "";
   const isValueValid =
@@ -44,10 +49,10 @@ function Buy() {
         >
           {/* TITLE */}
           <div
-            className="text-center text-sm font-mono tracking-widest mb-6"
-            style={{ color: linkColor }}
+            className="text-center font-mono tracking-widest mb-6"
+            style={{ color: linkColor, fontSize: 14 }}
           >
-            BUY STARS
+            ⭐ BUY STARS ⭐
           </div>
 
           {/* USERNAME */}
@@ -56,11 +61,12 @@ function Buy() {
             placeholder="Введите username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded-lg p-3 outline-none border text-sm mb-3"
+            className="w-full rounded-lg p-3 outline-none border mb-3"
             style={{
               backgroundColor: `${bgColor}80`,
               borderColor: `${hintColor}40`,
               color: textColor,
+              fontSize: 16, // 🔥 КРИТИЧНО (убирает зум)
             }}
           />
 
@@ -74,19 +80,20 @@ function Buy() {
               const v = e.target.value;
               if (/^\d*$/.test(v)) setValue(v);
             }}
-            className="w-full rounded-lg p-3 outline-none border text-sm"
+            className="w-full rounded-lg p-3 outline-none border"
             style={{
               backgroundColor: `${bgColor}80`,
               borderColor: `${hintColor}40`,
               color: textColor,
+              fontSize: 16, // 🔥 КРИТИЧНО
             }}
           />
 
           {/* ERROR */}
           {!isValueEmpty && !isValueValid && (
             <div
-              className="mt-2 text-xs font-mono"
-              style={{ color: "#ef4444" }}
+              className="mt-2 font-mono"
+              style={{ color: "#ef4444", fontSize: 12 }}
             >
               Число должно быть от 50 до 20000
             </div>
@@ -102,6 +109,7 @@ function Buy() {
                 : `${buttonColor}40`,
               color: "#fff",
               cursor: canBuy ? "pointer" : "not-allowed",
+              fontSize: 16,
             }}
             onClick={() => {
               if (!canBuy) return;
