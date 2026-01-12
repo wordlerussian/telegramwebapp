@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 
+const MIN = 50;
+const MAX = 20000;
+
 function Buy() {
   const tg = window.Telegram?.WebApp;
 
@@ -24,7 +27,7 @@ function Buy() {
   const isUsernameValid = username.trim().length > 0;
   const isValueEmpty = value.trim() === "";
   const isValueValid =
-    !isValueEmpty && !isNaN(num) && num >= 50 && num <= 20000;
+    !isValueEmpty && !isNaN(num) && num >= MIN && num <= MAX;
 
   const canBuy = isUsernameValid && isValueValid;
 
@@ -66,11 +69,11 @@ function Buy() {
               backgroundColor: `${bgColor}80`,
               borderColor: `${hintColor}40`,
               color: textColor,
-              fontSize: 16, // 🔥 КРИТИЧНО (убирает зум)
+              fontSize: 16,
             }}
           />
 
-          {/* VALUE */}
+          {/* VALUE INPUT */}
           <input
             type="text"
             inputMode="numeric"
@@ -85,7 +88,20 @@ function Buy() {
               backgroundColor: `${bgColor}80`,
               borderColor: `${hintColor}40`,
               color: textColor,
-              fontSize: 16, // 🔥 КРИТИЧНО
+              fontSize: 16,
+            }}
+          />
+
+          {/* SLIDER */}
+          <input
+            type="range"
+            min={MIN}
+            max={MAX}
+            value={isValueValid ? num : MIN}
+            onChange={(e) => setValue(e.target.value)}
+            className="w-full mt-3"
+            style={{
+              accentColor: buttonColor,
             }}
           />
 
@@ -113,10 +129,14 @@ function Buy() {
             }}
             onClick={() => {
               if (!canBuy) return;
+
               console.log("BUY:", {
                 username,
                 amount: num,
               });
+
+              // если надо отправлять в бота:
+              // tg?.sendData(JSON.stringify({ username, amount: num }));
             }}
           >
             BUY STARS
