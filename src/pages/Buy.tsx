@@ -93,17 +93,42 @@ function Buy() {
           />
 
           {/* SLIDER */}
-          <input
-            type="range"
-            min={MIN}
-            max={MAX}
-            value={isValueValid ? num : MIN}
-            onChange={(e) => setValue(e.target.value)}
-            className="w-full mt-3"
-            style={{
-              accentColor: buttonColor,
-            }}
-          />
+          <div className="mt-4">
+            <div className="flex items-center gap-3">
+              <span style={{ color: linkColor }}>⭐</span>
+
+              <div className="relative flex-1 h-4 flex items-center">
+                {/* base line */}
+                <div
+                  className="absolute left-0 right-0 h-1 rounded-full"
+                  style={{ backgroundColor: `${hintColor}40` }}
+                />
+
+                {/* filled line */}
+                <div
+                  className="absolute left-0 h-1 rounded-full"
+                  style={{
+                    width: `${
+                      ((isValueValid ? num : MIN) - MIN) / (MAX - MIN) * 100
+                    }%`,
+                    backgroundColor: buttonColor,
+                  }}
+                />
+
+                <input
+                  type="range"
+                  min={MIN}
+                  max={MAX}
+                  value={isValueValid ? num : MIN}
+                  onChange={(e) => setValue(e.target.value)}
+                  className="slider absolute inset-0"
+                />
+              </div>
+
+              <span style={{ color: linkColor }}>⭐</span>
+            </div>
+          </div>
+
 
           {/* ERROR */}
           {!isValueEmpty && !isValueValid && (
